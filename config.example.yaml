@@ -1,0 +1,112 @@
+# CCTV Monitor Configuration File
+# Copy this file to config.yaml and update with your settings
+
+# Telegram Configuration
+telegram:
+  bot_token: "YOUR_BOT_TOKEN_HERE"
+  chat_id: "YOUR_CHAT_ID_HERE"
+  # Rate limiting to avoid spam (seconds between same message type)
+  rate_limit_seconds: 300
+  # Daily health reports
+  daily_report_enabled: false
+  daily_report_time: "08:00"  # Time to send report if enabled
+  # Daily health reports
+  daily_report_enabled: false
+  daily_report_time: "08:00"  # Time to send report if enabled
+
+# Storage Configuration
+storage:
+  # Local temporary storage for active recordings
+  temp_dir: "/tmp/cctv"
+  # Local archive before cloud sync
+  archive_dir: "/tmp/cctv_store"
+  # Incomplete/failed recordings
+  incomplete_dir: "/tmp/cctv_store/incomplete"
+  # Maximum local storage (GB) - will trigger cleanup
+  max_local_storage_gb: 50
+  # Alert when free space below (GB)
+  min_free_space_gb: 10
+  # Keep recordings locally for (hours) before cleanup
+  local_retention_hours: 6
+
+# Cloud Sync Configuration
+cloud:
+  enabled: true
+  # rclone remote name (from rclone config)
+  remote_name: "GDriveYTLS"
+  remote_path: "/CCTV"
+  # Sync interval (seconds)
+  sync_interval_seconds: 120
+  # Only sync files older than (seconds) to avoid incomplete files
+  min_file_age_seconds: 60
+  # Retry configuration for failed syncs
+  max_retries: 3
+  retry_backoff_seconds: 60
+  # Exponential backoff multiplier
+  backoff_multiplier: 2
+  # Maximum backoff time (seconds)
+  max_backoff_seconds: 3600
+  # Cloud retention (days) - files older than this will be deleted
+  cloud_retention_days: 5
+
+# Camera Configuration
+cameras:
+  - name: "front-door"
+    enabled: true
+    rtsp_url: "rtsp://username:password@192.168.0.102:554/stream2"
+    # Segment duration (seconds)
+    segment_duration: 900
+    # Connection timeout (seconds)
+    connection_timeout: 30
+    # Retry delay after connection failure (seconds)
+    retry_delay: 60
+    # Maximum consecutive failures before extended backoff
+    max_failures: 3
+    # Extended retry delay after max_failures (seconds)
+    extended_retry_delay: 300
+    # Video codec settings
+    video_codec: "copy"
+    audio_codec: "copy"
+    # Container format
+    format: "mkv"
+    # Custom ffmpeg options (optional)
+    # ffmpeg_extra_opts: "-preset ultrafast"
+
+  # Example: Add more cameras
+  # - name: "backyard"
+  #   enabled: true
+  #   rtsp_url: "rtsp://username:password@192.168.0.103:554/stream1"
+  #   segment_duration: 900
+  #   connection_timeout: 30
+
+# Health Monitoring Configuration
+monitoring:
+  # Health check interval (seconds)
+  check_interval_seconds: 60
+  # Consider camera unhealthy if no new file in (seconds)
+  file_age_threshold_seconds: 120
+  # Disk space check
+  check_disk_space: true
+  # Process monitoring
+  check_processes: true
+  # Network connectivity check
+  ping_hosts:
+    - "google.com"
+    - "192.168.0.1"
+  # Cronitor integration (optional)
+  cronitor:
+    enabled: false
+    base_url: "https://cronitor.link/p/YOUR_KEY_HERE"
+    monitors:
+      recorder: "dd-front-door"
+      sync: "sync-monitor"
+      health: "health-check"
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  log_dir: "logs"
+  max_log_size_mb: 100
+  backup_count: 5
+  # Log to console as well
+  console: true

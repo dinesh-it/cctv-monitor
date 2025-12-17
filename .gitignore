@@ -1,0 +1,64 @@
+# Configuration files with sensitive data
+config.yaml
+*.env
+.env
+
+# Backup files
+*.backup
+*.backup.*
+
+# Log files and directories
+logs/
+*.log
+
+# Storage and recording directories
+storage/
+archive/
+/tmp/cctv/
+/tmp/cctv_store/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Scripts with potential secrets
+*-env.sh
+
+# Test files
+test.mkv
+*.test.*
+
+*.mkv

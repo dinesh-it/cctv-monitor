@@ -1,0 +1,27 @@
+[Unit]
+Description=CCTV Monitor - Multi-camera recording with cloud sync
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=dinesh
+Group=dinesh
+WorkingDirectory=/opt/cctv-monitor
+ExecStart=/usr/bin/python3 /opt/cctv-monitor/cctv_monitor.py /opt/cctv-monitor/config.yaml
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Resource limits
+LimitNOFILE=65536
+MemoryMax=2G
+CPUQuota=80%
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
