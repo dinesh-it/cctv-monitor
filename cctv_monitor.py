@@ -133,12 +133,6 @@ class CCTVMonitor:
             )
             self.logger.info("Telegram notifier initialized")
             
-            # Test Telegram connection
-            if self.notifier.test_connection():
-                self.logger.info("Telegram connection test successful")
-            else:
-                self.logger.warning("Telegram connection test failed")
-            
             # Initialize camera recorders
             storage_config = self.config['storage']
             for camera_config in self.config['cameras']:
@@ -230,6 +224,10 @@ class CCTVMonitor:
     
     def stop(self):
         """Stop all monitoring components gracefully"""
+        # Signal handler and run()'s finally both call stop(); only run once
+        if getattr(self, '_stopped', False):
+            return
+        self._stopped = True
         self.logger.info("Stopping all components...")
         
         # Stop health monitor first

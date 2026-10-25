@@ -82,7 +82,17 @@ class TelegramNotifier:
             logger.error(f"Unexpected error sending Telegram message: {e}")
             return None
     
-    def send_message(self, text: str, message_key: Optional[str] = None, 
+    def _log_for_agent(self, text: str):
+        """Append to the shared sent-messages log read by the Claude agent"""
+        try:
+            entry = {'ts': time.strftime('%Y-%m-%dT%H:%M:%S'), 'source': 'cctv-monitor',
+                     'kind': 'text', 'text': text}
+            with open('/opt/tel-bot/sent_messages.jsonl', 'a') as f:
+                f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+        except Exception as e:
+            logger.debug(f"Could not log message for agent: {e}")
+
+    def send_message(self, text: str, message_key: Optional[str] = None,
                     force: bool = False, parse_mode: str = "HTML") -> bool:
         """
         Send a Telegram message with rate limiting
@@ -115,6 +125,7 @@ class TelegramNotifier:
         if result:
             self.last_sent[message_key] = time.time()
             logger.info(f"Telegram notification sent: {message_key}")
+            self._log_for_agent(text)
             return True
         
         return False

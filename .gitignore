@@ -62,3 +62,6 @@ test.mkv
 *.test.*
 
 *.mkv
+
+# Dated backups
+*.bak-*
